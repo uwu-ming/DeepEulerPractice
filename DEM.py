@@ -6,8 +6,8 @@ from itertools import combinations as cb
 epochs=200
 batch_size=128
 verbose=1
-nb_classes=10 # number of outputs
-n_hidden=128
+nb_classes=1 # number of outputs
+n_hidden=80
 validation_split=0.2 # how much train is reserved for validation
 x=np.random.uniform(0,3,10)
 x=np.sort(x,axis=0)
@@ -41,4 +41,15 @@ LTE=np.zeros(len(t))
 
 for i in range(0,len(t)-1):
     LTE[i]=R(th[i,0],th[i,1],th[i,2],th[i,3])
-print(LTE)
+#print(LTE)
+x_train=th[0:45,0:3]
+y_train=np.asarray(LTE)
+model=tf.keras.models.Sequential()
+model.add(keras.layers.Dense(nb_classes,input_dim=3, activation="relu",name="layer_1"))
+model.add(keras.layers.Dense(n_hidden, activation="relu",name="layer_2"))
+model.add(keras.layers.Dense(nb_classes, activation="softmax",name="layer_3"))
+model.summary()
+model.compile(optimizer='Adam',loss='mean_absolute_error',metrics=['accuracy'])
+model.fit(x_train,y_train,epochs=50,verbose=1)
+#test_loss,test_acc=model.evaluate(x_test,y_test)
+#print('Test accuracy:',test_acc)
